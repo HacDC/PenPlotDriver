@@ -48,7 +48,7 @@ PStoPlotter() {
 	
 	PStoHPGL "$1" "$tempHPGL"
 	
-	cat "tempHPGL" > "$port"
+	cat "$tempHPGL" > "$port"
 }
 
 #Function inclusion guard.
