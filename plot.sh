@@ -34,7 +34,7 @@ portraitPStoHPGL() {
 }
 
 PStoHPGL() {
-	if grep '%%Orientation: Landscape' PWMController-sys-A2.ps > /dev/null
+	if grep '%%Orientation: Landscape' "$1" > /dev/null
 	then
 		landscapePStoHPGL "$1" "$2"
 	else
