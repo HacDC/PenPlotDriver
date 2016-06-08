@@ -69,7 +69,7 @@ PStoPlotter() {
 	sed -i 's/FT1;//g' "$tempHPGL"
 	
 	cat "$tempHPGL" > ./out.hpgl
-	hp2xx ./out.hpgl -m dxf
+	#hp2xx ./out.hpgl -m dxf
 	
 	cat "$tempHPGL" > "$port"
 	
