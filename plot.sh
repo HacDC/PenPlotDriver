@@ -24,7 +24,7 @@ landscapePStoHPGL() {
 	let "yshift*=-1"
 	let "yshift+=1"
 	
-	pstoedit -rotate 270 -dt -df Helvetica -f "hpgl: -penplotter -hpgl2" -yshift $yshift -xshift $xshift "$1" "$2" > /dev/null 2>&1
+	pstoedit -rotate 270 -dt -f "hpgl: -penplotter -hpgl2" -yshift $yshift -xshift $xshift "$1" "$2" > /dev/null 2>&1
 	
 	rm -f "$tempRotatedPS"
 }
@@ -32,7 +32,7 @@ landscapePStoHPGL() {
 portraitPStoHPGL() {
 	tempRotatedPS="/tmp/rotated-$(cat /proc/sys/kernel/random/uuid).ps"
 
-	pstoedit -rotate 180 "$1" "$tempRotatedPS" > /dev/null 2>&1
+	pstoedit -rotate 0 "$1" "$tempRotatedPS" > /dev/null 2>&1
 	
 	xoffset=$(cat "$tempRotatedPS" | grep '^%%BoundingBox:' | cut -d\  -f2)
 	yoffset=$(cat "$tempRotatedPS" | grep '^%%BoundingBox:' | cut -d\  -f3)
@@ -44,7 +44,7 @@ portraitPStoHPGL() {
 	let "yshift*=-1"
 	let "yshift+=1"
 	
-	pstoedit -rotate 180 -dt -df Helvetica -f "hpgl: -penplotter -hpgl2" -yshift $yshift -xshift $xshift "$1" "$2" > /dev/null 2>&1
+	pstoedit -rotate 0 -dt -f "hpgl: -penplotter -hpgl2" -yshift $yshift -xshift $xshift "$1" "$2" > /dev/null 2>&1
 	
 	rm -f "$tempRotatedPS"
 }
