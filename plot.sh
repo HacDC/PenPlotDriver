@@ -24,7 +24,7 @@ landscapePStoHPGL() {
 	let "yshift*=-1"
 	let "yshift+=1"
 	
-	pstoedit -dt -f "hpgl: -penplotter -hpgl2" -rotate 270 -yshift $yshift -xshift $xshift "$1" "$2" > /dev/null 2>&1
+	pstoedit -rotate 270 -dt -df Helvetica -f "hpgl: -penplotter -hpgl2" -yshift $yshift -xshift $xshift "$1" "$2" > /dev/null 2>&1
 	
 	rm -f "$tempRotatedPS"
 }
@@ -32,7 +32,7 @@ landscapePStoHPGL() {
 portraitPStoHPGL() {
 	tempRotatedPS="/tmp/rotated-$(cat /proc/sys/kernel/random/uuid).ps"
 
-	pstoedit -rotate 270 "$1" "$tempRotatedPS" > /dev/null 2>&1
+	pstoedit -rotate 180 "$1" "$tempRotatedPS" > /dev/null 2>&1
 	
 	xoffset=$(cat "$tempRotatedPS" | grep '^%%BoundingBox:' | cut -d\  -f2)
 	yoffset=$(cat "$tempRotatedPS" | grep '^%%BoundingBox:' | cut -d\  -f3)
@@ -44,17 +44,17 @@ portraitPStoHPGL() {
 	let "yshift*=-1"
 	let "yshift+=1"
 	
-	pstoedit -dt -f "hpgl: -penplotter -hpgl2" -rotate 270 -yshift $yshift -xshift $xshift "$1" "$2" > /dev/null 2>&1
+	pstoedit -rotate 180 -dt -df Helvetica -f "hpgl: -penplotter -hpgl2" -yshift $yshift -xshift $xshift "$1" "$2" > /dev/null 2>&1
 	
 	rm -f "$tempRotatedPS"
 }
 
 PStoHPGL() {
-	if grep '%%Orientation: Landscape' "$1" > /dev/null
+	if ! grep '%%Orientation: Landscape' "$1" > /dev/null
 	then
-		landscapePStoHPGL "$1" "$2"
-	else
 		portraitPStoHPGL "$1" "$2"
+	else
+		landscapePStoHPGL "$1" "$2"
 	fi
 }
 
@@ -64,7 +64,17 @@ PStoPlotter() {
 	
 	PStoHPGL "$1" "$tempHPGL"
 	
+	#No polygon fill.
+	sed -i 's/FP;//g' "$tempHPGL"
+	sed -i 's/FT1;//g' "$tempHPGL"
+	
+	cat "$tempHPGL" > ./out.hpgl
+	hp2xx ./out.hpgl -m dxf
+	
 	cat "$tempHPGL" > "$port"
+	
+	rm "$tempHPGL"
+	
 }
 
 #Function inclusion guard.
